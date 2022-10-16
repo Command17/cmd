@@ -1,3 +1,9 @@
 # CMD
 
-Please wait a bit. I'm still working on it.
+Forum Post: ..
+API: ..
+
+Get the full source:
+```lua
+game:GetService("InsertService"):InsertAsset(11295256365).Parent = workspace
+```
