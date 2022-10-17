@@ -13,7 +13,9 @@ local Events = Plugin.Events
 local CMD = require(Plugin.CMD)
 
 local PackagesToSave = {}
+
 local EXTRA_PACKAGES_KEY = "cmd_extra_packages"
+local FONT_KEY = "cmd_font"
 
 Widget.Title = "CMD"
 
@@ -38,6 +40,10 @@ Events.PackageRemoved.Event:Connect(function(Package)
 	PackagesToSave[Package] = nil
 end)
 
+Events.FontChanged.Event:Connect(function(font)
+	plugin:SetSetting(FONT_KEY, string.split(tostring(font), ".")[3])
+end)
+
 local succes, err = pcall(function()
 	PackagesToSave = HttpService:JSONDecode(plugin:GetSetting(EXTRA_PACKAGES_KEY))
 
@@ -50,5 +56,15 @@ local succes, err = pcall(function()
 
 			CMD:addPackage(Package)
 		end
+	end
+end)
+
+local succes, err = pcall(function()
+	local data = plugin:GetSetting(FONT_KEY)
+	
+	if data then
+		local font = Enum.Font[data]
+
+		CMD:setFont(font)
 	end
 end)
