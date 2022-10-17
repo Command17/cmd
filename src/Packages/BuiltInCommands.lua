@@ -4,6 +4,14 @@ local NonDeletablePackages = {
 	["BuilInCommands"] = script,
 }
 
+local Fonts = {}
+
+for i, v in ipairs(Enum.Font:GetEnumItems()) do
+	local font = string.split(tostring(v), ".")[3]
+	
+	Fonts[font] = v
+end
+
 return {
 	["help"] = function(args, cmdInterface, cmd)
 		for i, Package in ipairs(cmd.LoadedPackages) do
@@ -20,6 +28,34 @@ return {
 			end
 		end
 	end,
+	
+	["font"] = {
+		["get"] = function(args, cmdInterface, cmd)
+			cmdInterface:newMsg("The current font is: " .. string.split(tostring(cmdInterface:getFont()), ".")[3])
+		end,
+		
+		["set"] = function(args, cmdInterface, cmd)
+			local font = args[1]
+			
+			if font then
+				if Fonts[font] then
+					cmdInterface:setFont(Fonts[font])
+					
+					cmdInterface:newMsg("Changed font")
+				else
+					cmdInterface:newMsg("Could not find font")
+				end
+			else
+				cmdInterface:newMsg("An Argument is missing!")
+			end
+		end,
+		
+		["getFonts"] = function(args, cmdInterface, cmd)
+			for i, v in ipairs(Fonts) do
+				cmdInterface:newMsg(i, Color3.fromRGB(0, 255, 0))
+			end
+		end,
+	},
 	
 	["cd"] = function(args, cmdInterface, cmd)
 		if args[1] then
