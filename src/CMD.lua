@@ -3,7 +3,7 @@ local HttpService = game:GetService("HttpService")
 local cmd = {}
 local cmdInterface = {}
 cmd.Dir = "game"
-cmd.Version = "1.0.0"
+cmd.Version = "1.0.1"
 cmd.LoadedPackages = {}
 
 local Plugin = script.Parent
@@ -99,6 +99,10 @@ function cmd:getGameObjectFromDir()
 	return lastDir
 end
 
+function cmd:setFont(font: EnumItem)
+	cmdInterface:setFont(font)
+end
+
 -- Interface --
 
 local SyntaxHighlighter = require(script.SyntaxHighlighter)
@@ -118,6 +122,7 @@ local InterfaceChildren = State({})
 
 local BackgroundColor = State(settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainBackground))
 local TextColor = State(settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText))
+local fontState = State(Enum.Font.SourceSans)
 
 local BackgroundStyle = Computed(function()
 	return BackgroundColor:get()
@@ -127,7 +132,21 @@ local TextStyle = Computed(function()
 	return TextColor:get()
 end)
 
+local FontStyle = Computed(function()
+	return fontState:get()
+end)
+
 local Lines = 0
+
+function cmdInterface:getFont()
+	return fontState:get()
+end
+
+function cmdInterface:setFont(font: EnumItem)
+	fontState:set(font)
+	
+	Events.FontChanged:Fire(font)
+end
 
 function cmdInterface:createInterface(Widget)
 	local Ui = New "ScrollingFrame" {
@@ -171,6 +190,7 @@ function cmdInterface:newMsg(msg: string, color: Color3?)
 		AutomaticSize = Enum.AutomaticSize.X,
 		Text = msg,
 		TextSize = 16,
+		Font = FontStyle,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		RichText = true,
 		TextColor3 = color,
@@ -244,6 +264,7 @@ function cmdInterface:newInput()
 				AutomaticSize = Enum.AutomaticSize.X,
 				Text = DirComputed,
 				TextSize = 16,
+				Font = FontStyle,
 				TextColor3 = TextStyle,
 				BackgroundTransparency = 1,
 				Size = UDim2.new(0, 50, 1, 0),
@@ -258,6 +279,7 @@ function cmdInterface:newInput()
 
 				AutomaticSize = Enum.AutomaticSize.X,
 				TextSize = 16,
+				Font = FontStyle,
 				ClearTextOnFocus = false,
 				TextColor3 = BackgroundStyle,
 				TextXAlignment = Enum.TextXAlignment.Left,
@@ -287,6 +309,7 @@ function cmdInterface:newInput()
 
 				AutomaticSize = Enum.AutomaticSize.X,
 				TextSize = 16,
+				Font = FontStyle,
 				RichText = true,
 				Text = FullText,
 				TextColor3 = TextStyle,
