@@ -51,7 +51,7 @@ return {
 		end,
 		
 		["getFonts"] = function(args, cmdInterface, cmd)
-			for i, v in ipairs(Fonts) do
+			for i, v in pairs(Fonts) do
 				cmdInterface:newMsg(i, Color3.fromRGB(0, 255, 0))
 			end
 		end,
