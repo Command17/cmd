@@ -16,6 +16,7 @@ local PackagesToSave = {}
 
 local EXTRA_PACKAGES_KEY = "cmd_extra_packages"
 local FONT_KEY = "cmd_font"
+local BACKGROUND_KEY = "cmd_background"
 
 Widget.Title = "CMD"
 
@@ -38,10 +39,20 @@ end)
 
 Events.PackageRemoved.Event:Connect(function(Package)
 	PackagesToSave[Package] = nil
+	
+	Package:Destroy()
 end)
 
 Events.FontChanged.Event:Connect(function(font)
 	plugin:SetSetting(FONT_KEY, string.split(tostring(font), ".")[3])
+end)
+
+Events.BackgroundChanged.Event:Connect(function(color)
+	if color ~= nil then
+		plugin:SetSetting(BACKGROUND_KEY, string.format("%s,%s,%s", tostring(math.round(color.R * 255)), tostring(math.round(color.G * 255)), tostring(math.round(color.B * 255))))
+	else
+		plugin:SetSetting(BACKGROUND_KEY, nil)
+	end
 end)
 
 local succes, err = pcall(function()
@@ -66,5 +77,18 @@ local succes, err = pcall(function()
 		local font = Enum.Font[data]
 
 		CMD:setFont(font)
+	end
+end)
+
+local succes, err = pcall(function()
+	local color = plugin:GetSetting(BACKGROUND_KEY)
+	
+	if color ~= nil then
+		local colorSplit = string.split(color, ",")
+		local c1 = tonumber(colorSplit[1])
+		local c2 = tonumber(colorSplit[2])
+		local c3 = tonumber(colorSplit[3])
+		
+		CMD:setBackgroundColor(Color3.fromRGB(c1, c2, c3))
 	end
 end)
