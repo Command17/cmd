@@ -3,7 +3,7 @@ local HttpService = game:GetService("HttpService")
 local cmd = {}
 local cmdInterface = {}
 cmd.Dir = "game"
-cmd.Version = "1.0.1"
+cmd.Version = "1.2.0"
 cmd.LoadedPackages = {}
 
 local Plugin = script.Parent
@@ -103,6 +103,10 @@ function cmd:setFont(font: EnumItem)
 	cmdInterface:setFont(font)
 end
 
+function cmd:setBackgroundColor(color: Color3)
+	cmdInterface:setBackgroundColor(color)
+end
+
 -- Interface --
 
 local SyntaxHighlighter = require(script.SyntaxHighlighter)
@@ -116,6 +120,7 @@ local State = Fusion.State
 local Computed = Fusion.Computed
 
 local CurrentCommandBar = nil
+local CustomBackgroundColor = false
 
 local InterfaceChildrenT = {}
 local InterfaceChildren = State({})
@@ -148,6 +153,26 @@ function cmdInterface:setFont(font: EnumItem)
 	Events.FontChanged:Fire(font)
 end
 
+function cmdInterface:setBackgroundColor(color: Color3)
+	CustomBackgroundColor = true
+	
+	BackgroundColor:set(color)
+	
+	Events.BackgroundChanged:Fire(color)
+end
+
+function cmdInterface:useStudioBackgroundColor()
+	CustomBackgroundColor = false
+	
+	BackgroundColor:set(settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainBackground))
+	
+	Events.BackgroundChanged:Fire(nil)
+end
+
+function cmdInterface:getBackgroundColor()
+	return BackgroundColor:get()
+end
+
 function cmdInterface:createInterface(Widget)
 	local Ui = New "ScrollingFrame" {
 		Parent = Widget,
@@ -166,14 +191,16 @@ function cmdInterface:createInterface(Widget)
 
 	cmdInterface:newMsg("Running CMD v" .. cmd.Version .. ". Run clear to clear cmd. Run help to see commands.")
 	
-	local plugin_version = "1.0.0"
+	local plugin_version = "1.2.0"
 	
 	local succes, err = pcall(function()
 		plugin_version = HttpService:GetAsync("https://raw.githubusercontent.com/Command17/cmd/main/version.txt")
 	end)
 	
+	plugin_version = string.gsub(plugin_version, "%s", "")
+	
 	if succes then
-		if plugin_version == cmd.Version then
+		if plugin_version ~= cmd.Version then
 			cmdInterface:newMsg("CMD v" .. plugin_version .. "is now available", Color3.fromRGB(255, 255, 0))
 		end
 	end
@@ -346,7 +373,9 @@ function cmdInterface:clear()
 end
 
 settings().Studio.ThemeChanged:Connect(function()
-	BackgroundColor:set(settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainBackground))
+	if CustomBackgroundColor then
+		BackgroundColor:set(settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainBackground))
+	end
 	TextColor:set(settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText))
 end)
 
