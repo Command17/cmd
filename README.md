@@ -2,7 +2,7 @@
 
 Forum Post: https://devforum.roblox.com/t/cmd-a-simple-windows-like-cmd/2024427
 
-API: https://github.com/Command17/cmd/wiki
+API: https://command17.gitbook.io/cmd-documentation/
 
 Get the full source:
 ```lua
