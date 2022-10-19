@@ -3,7 +3,7 @@ local HttpService = game:GetService("HttpService")
 local cmd = {}
 local cmdInterface = {}
 cmd.Dir = "game"
-cmd.Version = "1.2.0"
+cmd.Version = "1.2.1"
 cmd.LoadedPackages = {}
 
 local Plugin = script.Parent
@@ -191,7 +191,7 @@ function cmdInterface:createInterface(Widget)
 
 	cmdInterface:newMsg("Running CMD v" .. cmd.Version .. ". Run clear to clear cmd. Run help to see commands.")
 	
-	local plugin_version = "1.2.0"
+	local plugin_version = "1.2.1"
 	
 	local succes, err = pcall(function()
 		plugin_version = HttpService:GetAsync("https://raw.githubusercontent.com/Command17/cmd/main/version.txt")
@@ -201,7 +201,7 @@ function cmdInterface:createInterface(Widget)
 	
 	if succes then
 		if plugin_version ~= cmd.Version then
-			cmdInterface:newMsg("CMD v" .. plugin_version .. "is now available", Color3.fromRGB(255, 255, 0))
+			cmdInterface:newMsg("CMD v" .. plugin_version .. " is now available", Color3.fromRGB(255, 255, 0))
 		end
 	end
 end
