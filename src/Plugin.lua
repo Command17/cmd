@@ -41,6 +41,8 @@ Events.PackageRemoved.Event:Connect(function(Package)
 	PackagesToSave[Package] = nil
 	
 	Package:Destroy()
+	
+	plugin:SetSetting(EXTRA_PACKAGES_KEY, HttpService:JSONEncode(PackagesToSave))
 end)
 
 Events.FontChanged.Event:Connect(function(font)
