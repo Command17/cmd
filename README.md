@@ -1,3 +1,3 @@
 # CMD
 
-This is the documentation for the CMD plugin.
+I'm sorry but i broke it
